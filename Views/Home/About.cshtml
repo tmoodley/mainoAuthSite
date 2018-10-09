@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    <div class="col-md-12">
+        @if (User.Identity.IsAuthenticated)
+        {
+        <h2>About @ViewBag.UserName</h2>
+        <p>
+            Main ID: @ViewBag.EquitableId
+        </p>
+        } 
+        else
+        {
+        <h2>About the Mainsite.ca Project</h2>
+        }
+
+    </div>
+</div>
