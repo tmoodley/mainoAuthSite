@@ -29,8 +29,7 @@ namespace SampleMvcApp.Controllers
                 var obj = await GetUserIdAsync(token, accessToken);
                 string userName = obj["username"];
                 HttpContext.Session.SetString("auth0UserName", userName);
-                var equitable_id = obj["user_metadata"];
-                string equitableId = equitable_id["equitable_id"];
+                string equitableId = obj["user_metadata"]["equitable_id"];
                 HttpContext.Session.SetString("equitable_id", equitableId);
                 ViewBag.UserName = HttpContext.Session.GetString("auth0UserName");
                 ViewBag.EquitableId = equitableId;
@@ -41,9 +40,8 @@ namespace SampleMvcApp.Controllers
 
         public IActionResult About()
         { 
-            ViewBag.UserName = HttpContext.Session.GetString("auth0UserName"); 
-            var equitableId = HttpContext.Session.GetString("equitable_id");
-            ViewBag.EquitableId = equitableId;
+            ViewBag.UserName = HttpContext.Session.GetString("auth0UserName");
+            ViewBag.EquitableId = HttpContext.Session.GetString("equitable_id"); 
 
             return View();
         }
@@ -51,7 +49,7 @@ namespace SampleMvcApp.Controllers
 
         private static async Task<dynamic> GetUserAsync(string userId, string token)
         {
-            var client = new RestClient("https://mainsite.auth0.com/api/v2/users/" + userId);
+            var client = new RestClient("https://equitablelife.auth0.com/api/v2/users/" + userId);
             var request = new RestRequest(Method.GET);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("authorization", "Bearer " + token);
@@ -69,7 +67,7 @@ namespace SampleMvcApp.Controllers
 
         private static async Task<dynamic> GetUserIdAsync(string token, string accessToken)
         {
-            var client = new RestClient("https://mainsite.auth0.com/userinfo");
+            var client = new RestClient("https://equitablelife.auth0.com/userinfo");
             var request = new RestRequest(Method.GET);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("authorization", "Bearer " + accessToken); 
@@ -89,7 +87,7 @@ namespace SampleMvcApp.Controllers
           
         public async Task<string> GetTokenAsync()
         {
-            var client = new RestClient("https://mainsite.auth0.com/oauth/token");
+            var client = new RestClient("https://equitablelife.auth0.com/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
             // Configure the Auth0 Client ID and Client Secret 
@@ -97,7 +95,7 @@ namespace SampleMvcApp.Controllers
             string client_secret = Configuration["Auth0:ClientSecret"];
             request.AddParameter("application/json", "{\"client_id\":\"" + client_id
                                 + "\",\"client_secret\":\"" + client_secret
-                                + "\",\"audience\":\"https://mainsite.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
+                                + "\",\"audience\":\"https://equitablelife.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
 
             TaskCompletionSource<IRestResponse> taskCompletion = new TaskCompletionSource<IRestResponse>();
 

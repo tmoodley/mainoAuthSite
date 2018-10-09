@@ -45,9 +45,10 @@ namespace SampleMvcApp.Controllers
             await RegisterUserAsync(user, token);
         }
 
-        private static async Task RegisterUserAsync(User user, string token)
+        private async Task RegisterUserAsync(User user, string token)
         {
-            var clientToken = new RestClient("https://equitablelife.auth0.com/api/v2/users");
+            string domain = Configuration["Auth0:Domain"];
+            var client = new RestClient(domain + "/api/v2/users");
             RestRequest request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("authorization", "Bearer " + token);
@@ -62,14 +63,15 @@ namespace SampleMvcApp.Controllers
                                 ParameterType.RequestBody);
             TaskCompletionSource<IRestResponse> taskCompletion = new TaskCompletionSource<IRestResponse>();
 
-            RestRequestAsyncHandle handle = clientToken.ExecuteAsync(request, r => taskCompletion.SetResult(r));
+            RestRequestAsyncHandle handle = client.ExecuteAsync(request, r => taskCompletion.SetResult(r));
 
             RestResponse response = (RestResponse)(await taskCompletion.Task);
         }
 
         public async Task<string> GetTokenAsync()
         {
-            var client = new RestClient("https://equitablelife.auth0.com/oauth/token");
+            string domain = Configuration["Auth0:Domain"];
+            var client = new RestClient(domain + "/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
             // Configure the Auth0 Client ID and Client Secret 
